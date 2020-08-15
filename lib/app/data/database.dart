@@ -28,7 +28,7 @@ class Database extends _$Database {
   @override
   MigrationStrategy get migration =>
       MigrationStrategy(onCreate: (Migrator m) async {
-        m.createAll().then((onValue) async {
+        m.createAllTables().then((onValue) async {
           await into(bebidas).insert(Bebida(
               ml: 100,
               imagemCopo: "cup-100.svg",

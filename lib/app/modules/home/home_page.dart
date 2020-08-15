@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dialogs/escolher_copo_dialog.dart';
@@ -32,26 +31,30 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   HomeController _controller = HomeController();
 
+  void initData() {
+    SharedPreferences.getInstance().then((prefs) async {
+      var configString = prefs.getString(Config.preferenceKey);
+      var configDecoded = json.decode(configString);
+      Config config = Config.fromJson(configDecoded);
+      var bebida =
+          await Database.instance.bebidaDao.find(config.copoSelecionadoId);
+      var hoje = DateTime.now();
+      _controller.initConfig(config, bebida);
+      Database.instance.bebidaIngeridaDao.dadosDoDia().listen((onData) {
+        return _controller.setBebidasIngeridasHoje(onData
+            .where((v) =>
+                v.bebidaIngerida.dataIngestao.month == hoje.month &&
+                v.bebidaIngerida.dataIngestao.day == hoje.day)
+            .toList());
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      SharedPreferences.getInstance().then((prefs) async {
-        var configString = prefs.getString(Config.preferenceKey);
-        var configDecoded = json.decode(configString);
-        Config config = Config.fromJson(configDecoded);
-        var bebida =
-            await Database.instance.bebidaDao.find(config.copoSelecionadoId);
-        var hoje = DateTime.now();
-        Database.instance.bebidaIngeridaDao.dadosDoDia().listen((onData) {
-          return _controller.setBebidasIngeridasHoje(onData
-              .where((v) =>
-                  v.bebidaIngerida.dataIngestao.month == hoje.month &&
-                  v.bebidaIngerida.dataIngestao.day == hoje.day)
-              .toList());
-        });
-        _controller.initConfig(config, bebida);
-      });
+      initData();
     });
   }
 
@@ -92,7 +95,8 @@ class _HomePageState extends State<HomePage> {
                                     //_controller.bebida.id
                                     _bebidaIngeridaDao.add(BebidaIngerida(
                                         dataIngestao: DateTime.now(),
-                                        bebidaId: 1,
+                                        bebidaId: _controller
+                                            .config.copoSelecionadoId,
                                         quantidadeIngerida: 1));
                                   },
                                   child: Column(
@@ -154,7 +158,10 @@ class _HomePageState extends State<HomePage> {
                             right: 30,
                             bottom: 0,
                             child: GestureDetector(
-                              onTap: () => escolherCopoDialog(context),
+                              onTap: () async {
+                                await escolherCopoDialog(context);
+                                initData();
+                              },
                               child: Stack(
                                 children: <Widget>[
                                   Container(
@@ -242,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height / 2,
+                    height: MediaQuery.of(context).size.height / 3,
                     padding: EdgeInsets.only(left: 28.0, right: 28.0),
                     child: Card(
                       elevation: 8.0,
@@ -261,26 +268,20 @@ class _HomePageState extends State<HomePage> {
                             if (index == 0) {
                               if (_controller.totalIngeridoHoje <
                                   _controller.config.metaIngestao) {
-                                print(
-                                    '####### ${_controller.config.horariosLembretes}');
-                                Time hora =
-                                    _controller.config.horariosLembretes[0];
+                                proximoHorario(
+                                    _controller.config.horariosLembretes);
+                                Time hora = proximoHorario(
+                                    _controller.config.horariosLembretes);
                                 return ListTile(
                                   contentPadding:
                                       EdgeInsets.only(left: 12.0, right: 20.0),
                                   leading: Icon(
                                     Icons.timer,
                                     color: Colors.black,
-                                    size: 15.0,
+                                    size: 22.0,
                                   ),
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text('${hora.hour}:${hora.minute}'),
-                                      Text('Proxima vez'),
-                                    ],
-                                  ),
+                                  title: Text(
+                                      '${completeZeroDate(hora.hour)}:${completeZeroDate(hora.minute)} Proxima vez'),
                                   trailing: Text('${_controller.bebida.ml} ml'),
                                 );
                               }
@@ -295,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                                   Text(
                                       '${completeZeroDate(item.bebidaIngerida.dataIngestao.hour)}:${completeZeroDate(item.bebidaIngerida.dataIngestao.minute)}'),
                                   Text(
-                                      '${item.bebidaIngerida.dataIngestao.day}'),
+                                      '${completeZeroDate(item.bebidaIngerida.dataIngestao.day)}/${completeZeroDate(item.bebidaIngerida.dataIngestao.month)}'),
                                   Text('${item.bebida.ml} ml'),
                                 ],
                               ),
@@ -335,11 +336,19 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                               trailing: PopupMenuButton(
+                                onSelected: (value) async {
+                                  switch (value) {
+                                    case 'excluir':
+                                      await _bebidaIngeridaDao
+                                          .remove(item.bebidaIngerida.id);
+                                      break;
+                                  }
+                                },
                                 itemBuilder: (context) {
                                   return [
-                                    PopupMenuItem(child: Text('Editar')),
                                     PopupMenuItem(
                                       child: Text('Excluir'),
+                                      value: 'excluir',
                                     ),
                                   ];
                                 },

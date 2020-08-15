@@ -26,6 +26,9 @@ dependencies:
   flutter_local_notifications: ^1.2.0+4
   path_provider: ^1.6.1
   provider:
+  firebase_admob: ^0.9.3+4
+  firebase_core: ^0.4.5
+  firebase_analytics: ^5.0.16
   #essas 4 dependencias abaixo estavam na documentacao do moor
   #  moor:
   #  moor_ffi:

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "187211716376",
+    "firebase_url": "https://beber-agua-1c027.firebaseio.com",
+    "project_id": "beber-agua-1c027",
+    "storage_bucket": "beber-agua-1c027.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187211716376:android:46492a2e70402c2466706d",
+        "android_client_info": {
+          "package_name": "com.resio.beber_agua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "187211716376-kv6pc3u0bjlsk00jkdek4j6oje41qn7t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLyZTrjQWVPstqSGtK1O_q_BrUlHh7goM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "187211716376-kv6pc3u0bjlsk00jkdek4j6oje41qn7t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

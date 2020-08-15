@@ -1,3 +1,4 @@
+import 'package:beber_agua/app/data/database.dart';
 import 'package:beber_agua/app/data/models/bebidas_join.dart';
 import 'package:beber_agua/app/data/models/config.dart';
 import 'package:mobx/mobx.dart';
@@ -17,11 +18,9 @@ abstract class _HomeBase with Store {
   int currentValue = 0;
 
   @action
-  void initConfig(config, bebida) {
-    print(config.toString());
-    print(bebida.toString());
-    this.config = config;
+  void initConfig(Config config, Bebida bebida) {
     this.bebida = bebida;
+    this.config = config.copyWith();
   }
 
   @observable

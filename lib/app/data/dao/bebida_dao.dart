@@ -11,14 +11,16 @@ class BebidaDao extends DatabaseAccessor<Database> with _$BebidaDaoMixin {
 
   BebidaDao(this.db) : super(db);
 
-  Future<Bebida> find(int id) => (select(bebidas)..where((t) => t.id.equals(id))).getSingle();
+  Future<Bebida> find(int id) =>
+      (select(bebidas)..where((t) => t.id.equals(id))).getSingle();
 
   Stream<List<Bebida>> list() => select(bebidas).watch();
 
-  Future add(Bebida bebida) => into(bebidas).insert(bebida.copyWith(createdAt: DateTime.now(), updatedAt: DateTime.now()));
+  Future add(Bebida bebida) => into(bebidas).insert(
+      bebida.copyWith(createdAt: DateTime.now(), updatedAt: DateTime.now()));
 
-  Future edit(Bebida bebida) => update(bebidas).replace(bebida.copyWith(updatedAt: DateTime.now()));
+  Future edit(Bebida bebida) =>
+      update(bebidas).replace(bebida.copyWith(updatedAt: DateTime.now()));
 
   Future remove(id) => (delete(bebidas)..where((t) => t.id.equals(id))).go();
-
 }

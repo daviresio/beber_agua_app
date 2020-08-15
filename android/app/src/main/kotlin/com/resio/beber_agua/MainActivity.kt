@@ -1,4 +1,4 @@
-package com.example.beber_agua
+package com.resio.beber_agua
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

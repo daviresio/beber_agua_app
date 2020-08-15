@@ -74,7 +74,7 @@ class _InitialPageState extends State<InitialPage> {
   void initState() {
     SharedPreferences.getInstance().then((prefs) {
       if (prefs.getString(Config.preferenceKey) != null) {
-        //TODO comentar essa linha para sempre fazer o cadastro
+        //TODO comentar essa linha para sempre fazer o cadastro, util para etapas no desenvolvimento
         Navigator.of(context).pushNamed('/home');
       }
     });

@@ -1,10 +1,7 @@
 import 'package:beber_agua/app/data/models/bebida.dart';
 import 'package:beber_agua/app/data/models/bebida_ingerida.dart';
 import 'package:beber_agua/app/data/models/bebidas_join.dart';
-import 'package:beber_agua/app/modules/home/home_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:moor_flutter/moor_flutter.dart';
-import 'package:provider/provider.dart';
 
 import '../database.dart';
 
