@@ -100,7 +100,7 @@ mixin _$HomeController on _HomeBase, Store {
   }
 
   @override
-  dynamic setBebidasIngeridasHoje(dynamic v) {
+  dynamic setBebidasIngeridasHoje(List<BebidaComBebidaIngerida> v) {
     final _$actionInfo = _$_HomeBaseActionController.startAction();
     try {
       return super.setBebidasIngeridasHoje(v);

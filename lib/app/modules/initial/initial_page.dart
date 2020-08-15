@@ -46,7 +46,12 @@ class _InitialPageState extends State<InitialPage> {
           time: v));
 
       var prefs = await SharedPreferences.getInstance();
-      prefs.setString(Config.preferenceKey, _config.toJson().toString());
+      var _configJson = json.encode(_config.toJson());
+      var _configString = _configJson.toString();
+      prefs.setString(
+        Config.preferenceKey,
+        _configString,
+      );
       Navigator.of(context).pushNamed('/home');
     } else {
       _controller.nextPage(
@@ -69,7 +74,8 @@ class _InitialPageState extends State<InitialPage> {
   void initState() {
     SharedPreferences.getInstance().then((prefs) {
       if (prefs.getString(Config.preferenceKey) != null) {
-//        Navigator.of(context).pushNamed('/home');
+        //TODO comentar essa linha para sempre fazer o cadastro
+        Navigator.of(context).pushNamed('/home');
       }
     });
   }

@@ -11,12 +11,14 @@ class Bebida extends DataClass implements Insertable<Bebida> {
   final int id;
   final int ml;
   final String imagemCopo;
+  final bool isCustom;
   final DateTime createdAt;
   final DateTime updatedAt;
   Bebida(
       {this.id,
       @required this.ml,
       @required this.imagemCopo,
+      this.isCustom,
       @required this.createdAt,
       @required this.updatedAt});
   factory Bebida.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -24,12 +26,15 @@ class Bebida extends DataClass implements Insertable<Bebida> {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return Bebida(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       ml: intType.mapFromDatabaseResponse(data['${effectivePrefix}ml']),
       imagemCopo: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}imagem_copo']),
+      isCustom:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_custom']),
       createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
       updatedAt: dateTimeType
@@ -43,6 +48,7 @@ class Bebida extends DataClass implements Insertable<Bebida> {
       id: serializer.fromJson<int>(json['id']),
       ml: serializer.fromJson<int>(json['ml']),
       imagemCopo: serializer.fromJson<String>(json['imagemCopo']),
+      isCustom: serializer.fromJson<bool>(json['isCustom']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -54,6 +60,7 @@ class Bebida extends DataClass implements Insertable<Bebida> {
       'id': serializer.toJson<int>(id),
       'ml': serializer.toJson<int>(ml),
       'imagemCopo': serializer.toJson<String>(imagemCopo),
+      'isCustom': serializer.toJson<bool>(isCustom),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -67,6 +74,9 @@ class Bebida extends DataClass implements Insertable<Bebida> {
       imagemCopo: imagemCopo == null && nullToAbsent
           ? const Value.absent()
           : Value(imagemCopo),
+      isCustom: isCustom == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isCustom),
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
           : Value(createdAt),
@@ -80,12 +90,14 @@ class Bebida extends DataClass implements Insertable<Bebida> {
           {int id,
           int ml,
           String imagemCopo,
+          bool isCustom,
           DateTime createdAt,
           DateTime updatedAt}) =>
       Bebida(
         id: id ?? this.id,
         ml: ml ?? this.ml,
         imagemCopo: imagemCopo ?? this.imagemCopo,
+        isCustom: isCustom ?? this.isCustom,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -95,6 +107,7 @@ class Bebida extends DataClass implements Insertable<Bebida> {
           ..write('id: $id, ')
           ..write('ml: $ml, ')
           ..write('imagemCopo: $imagemCopo, ')
+          ..write('isCustom: $isCustom, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -106,8 +119,10 @@ class Bebida extends DataClass implements Insertable<Bebida> {
       id.hashCode,
       $mrjc(
           ml.hashCode,
-          $mrjc(imagemCopo.hashCode,
-              $mrjc(createdAt.hashCode, updatedAt.hashCode)))));
+          $mrjc(
+              imagemCopo.hashCode,
+              $mrjc(isCustom.hashCode,
+                  $mrjc(createdAt.hashCode, updatedAt.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -115,6 +130,7 @@ class Bebida extends DataClass implements Insertable<Bebida> {
           other.id == this.id &&
           other.ml == this.ml &&
           other.imagemCopo == this.imagemCopo &&
+          other.isCustom == this.isCustom &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -123,12 +139,14 @@ class BebidasCompanion extends UpdateCompanion<Bebida> {
   final Value<int> id;
   final Value<int> ml;
   final Value<String> imagemCopo;
+  final Value<bool> isCustom;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const BebidasCompanion({
     this.id = const Value.absent(),
     this.ml = const Value.absent(),
     this.imagemCopo = const Value.absent(),
+    this.isCustom = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -136,6 +154,7 @@ class BebidasCompanion extends UpdateCompanion<Bebida> {
     this.id = const Value.absent(),
     @required int ml,
     @required String imagemCopo,
+    this.isCustom = const Value.absent(),
     @required DateTime createdAt,
     @required DateTime updatedAt,
   })  : ml = Value(ml),
@@ -146,12 +165,14 @@ class BebidasCompanion extends UpdateCompanion<Bebida> {
       {Value<int> id,
       Value<int> ml,
       Value<String> imagemCopo,
+      Value<bool> isCustom,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt}) {
     return BebidasCompanion(
       id: id ?? this.id,
       ml: ml ?? this.ml,
       imagemCopo: imagemCopo ?? this.imagemCopo,
+      isCustom: isCustom ?? this.isCustom,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -195,6 +216,15 @@ class $BebidasTable extends Bebidas with TableInfo<$BebidasTable, Bebida> {
     );
   }
 
+  final VerificationMeta _isCustomMeta = const VerificationMeta('isCustom');
+  GeneratedBoolColumn _isCustom;
+  @override
+  GeneratedBoolColumn get isCustom => _isCustom ??= _constructIsCustom();
+  GeneratedBoolColumn _constructIsCustom() {
+    return GeneratedBoolColumn('is_custom', $tableName, true,
+        defaultValue: const Constant(false));
+  }
+
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   GeneratedDateTimeColumn _createdAt;
   @override
@@ -221,7 +251,7 @@ class $BebidasTable extends Bebidas with TableInfo<$BebidasTable, Bebida> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, ml, imagemCopo, createdAt, updatedAt];
+      [id, ml, imagemCopo, isCustom, createdAt, updatedAt];
   @override
   $BebidasTable get asDslTable => this;
   @override
@@ -245,6 +275,10 @@ class $BebidasTable extends Bebidas with TableInfo<$BebidasTable, Bebida> {
           imagemCopo.isAcceptableValue(d.imagemCopo.value, _imagemCopoMeta));
     } else if (isInserting) {
       context.missing(_imagemCopoMeta);
+    }
+    if (d.isCustom.present) {
+      context.handle(_isCustomMeta,
+          isCustom.isAcceptableValue(d.isCustom.value, _isCustomMeta));
     }
     if (d.createdAt.present) {
       context.handle(_createdAtMeta,
@@ -280,6 +314,9 @@ class $BebidasTable extends Bebidas with TableInfo<$BebidasTable, Bebida> {
     }
     if (d.imagemCopo.present) {
       map['imagem_copo'] = Variable<String, StringType>(d.imagemCopo.value);
+    }
+    if (d.isCustom.present) {
+      map['is_custom'] = Variable<bool, BoolType>(d.isCustom.value);
     }
     if (d.createdAt.present) {
       map['created_at'] = Variable<DateTime, DateTimeType>(d.createdAt.value);

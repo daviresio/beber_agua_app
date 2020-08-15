@@ -5,4 +5,8 @@ class BebidaComBebidaIngerida {
   final BebidaIngerida bebidaIngerida;
 
   BebidaComBebidaIngerida({this.bebida, this.bebidaIngerida});
+
+  @override
+  String toString() =>
+      'BebidaComBebidaIngerida(bebida: $bebida, bebidaIngerida: $bebidaIngerida)';
 }

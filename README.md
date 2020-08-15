@@ -1,16 +1,10 @@
-# beber_agua
+# Beber Agua Lembrete
 
-&#x27;A new Flutter project. Created by Slidy&#x27;
+app em flutter para monitorar e lembrar o consumo de agua durante o dia baseado na necessidade de cada pessoa
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![](screenshots/screennshot-1.png) | ![](screenshots/screennshot-2.png)
+<br /><br />
+![](screenshots/screennshot-3.png) | ![](screenshots/screennshot-4.png)
+<br /><br />
+![](screenshots/screennshot-5.png)

@@ -1,4 +1,3 @@
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Config {
@@ -13,7 +12,17 @@ class Config {
   final int copoSelecionadoId;
   final List<Time> horariosLembretes;
 
-  Config({this.sexo, this.peso, this.horaAcordar, this.minutoAcordar, this.horaDormir, this.minutoDormir, this.metaIngestao, this.metaIngestaoRecomendada, this.copoSelecionadoId, this.horariosLembretes});
+  Config(
+      {this.sexo,
+      this.peso,
+      this.horaAcordar,
+      this.minutoAcordar,
+      this.horaDormir,
+      this.minutoDormir,
+      this.metaIngestao,
+      this.metaIngestaoRecomendada,
+      this.copoSelecionadoId,
+      this.horariosLembretes});
 
   Config copyWith({
     int horaAcordar,
@@ -32,7 +41,7 @@ class Config {
       horaDormir: horaDormir ?? this.horaDormir,
       metaIngestao: metaIngestao ?? this.metaIngestao,
       metaIngestaoRecomendada:
-      metaIngestaoRecomendada ?? this.metaIngestaoRecomendada,
+          metaIngestaoRecomendada ?? this.metaIngestaoRecomendada,
       minutoAcordar: minutoAcordar ?? this.minutoAcordar,
       minutoDormir: minutoDormir ?? this.minutoDormir,
       peso: peso ?? this.peso,
@@ -43,20 +52,20 @@ class Config {
   }
 
   Map<String, dynamic> toJson() => {
-    'sexo': sexo,
-    'peso': peso,
-    'horaAcordar': horaAcordar,
-    'minutoAcordar': minutoAcordar,
-    'horaDormir': horaDormir,
-    'minutoDormir': minutoDormir,
-    'metaIngestao': metaIngestao,
-    'metaIngestaoRecomendada': metaIngestaoRecomendada,
-    'copoSelecionadoId': copoSelecionadoId,
-    'horariosLembretes': horariosLembretes,
-  };
+        'sexo': sexo,
+        'peso': peso,
+        'horaAcordar': horaAcordar,
+        'minutoAcordar': minutoAcordar,
+        'horaDormir': horaDormir,
+        'minutoDormir': minutoDormir,
+        'metaIngestao': metaIngestao,
+        'metaIngestaoRecomendada': metaIngestaoRecomendada,
+        'copoSelecionadoId': copoSelecionadoId,
+        'horariosLembretes': horariosLembretes.map((e) => e.toMap()).toList(),
+      };
 
-  Config.fromJson(Map<String, dynamic> json) :
-        sexo = json['sexo'],
+  Config.fromJson(Map<String, dynamic> json)
+      : sexo = json['sexo'],
         peso = json['peso'],
         horaAcordar = json['horaAcordar'],
         minutoAcordar = json['minutoAcordar'],
@@ -65,8 +74,8 @@ class Config {
         metaIngestao = json['metaIngestao'],
         metaIngestaoRecomendada = json['metaIngestaoRecomendada'],
         copoSelecionadoId = json['copoSelecionadoId'],
-        horariosLembretes = json['horariosLembretes'];
-
+        horariosLembretes = List<Time>.from(json['horariosLembretes']
+            .map((v) => Time(v['hour'], v['minute'], v['second'])));
 
   static const String preferenceKey = 'config_key';
 
@@ -74,7 +83,6 @@ class Config {
   String toString() {
     return 'Config{sexo: $sexo, peso: $peso, horaAcordar: $horaAcordar, minutoAcordar: $minutoAcordar, horaDormir: $horaDormir, minutoDormir: $minutoDormir, metaIngestao: $metaIngestao, metaIngestaoRecomendada: $metaIngestaoRecomendada, copoSelecionadoId: $copoSelecionadoId, horariosLembretes: $horariosLembretes}';
   }
-
 
   static List<Time> calcIntervals(Config config) {
     List<Time> times = List();
@@ -90,6 +98,4 @@ class Config {
 
     return times;
   }
-
-
 }

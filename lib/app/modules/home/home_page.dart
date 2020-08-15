@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dialogs/escolher_copo_dialog.dart';
@@ -29,23 +30,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  HomeController _controller = HomeController();
+
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((prefs) async {
-      Config config =
-          Config.fromJson(json.decode(prefs.getString(Config.preferenceKey)));
-      var bebida =
-          await Database.instance.bebidaDao.find(config.copoSelecionadoId);
-      Database.instance.bebidaIngeridaDao.dadosDoDia();
-      _controller.initConfig(config, bebida);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      SharedPreferences.getInstance().then((prefs) async {
+        var configString = prefs.getString(Config.preferenceKey);
+        var configDecoded = json.decode(configString);
+        Config config = Config.fromJson(configDecoded);
+        var bebida =
+            await Database.instance.bebidaDao.find(config.copoSelecionadoId);
+        var hoje = DateTime.now();
+        Database.instance.bebidaIngeridaDao.dadosDoDia().listen((onData) {
+          return _controller.setBebidasIngeridasHoje(onData
+              .where((v) =>
+                  v.bebidaIngerida.dataIngestao.month == hoje.month &&
+                  v.bebidaIngerida.dataIngestao.day == hoje.day)
+              .toList());
+        });
+        _controller.initConfig(config, bebida);
+      });
     });
   }
 
   final BebidaDao _bebidaDao = Database.instance.bebidaDao;
   final BebidaIngeridaDao _bebidaIngeridaDao =
       Database.instance.bebidaIngeridaDao;
-  final _controller = HomeController();
 
   @override
   Widget build(BuildContext context) {
@@ -234,12 +246,14 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.only(left: 28.0, right: 28.0),
                     child: Card(
                       elevation: 8.0,
-                      child: Observer(
-                        builder: (_) => ListView.builder(
-                          itemCount: (_controller.bebidasIngeridasHoje == null
-                                  ? 0
-                                  : _controller.bebidasIngeridasHoje.length) +
-                              1,
+                      child: Observer(builder: (_) {
+                        if (_controller.bebidasIngeridasHoje == null ||
+                            _controller.config.horariosLembretes.length == 0) {
+                          return Container();
+                        }
+                        return ListView.builder(
+                          itemCount:
+                              _controller.bebidasIngeridasHoje.length + 1,
                           itemBuilder: (context, index) {
                             BebidaComBebidaIngerida item = index > 0
                                 ? _controller.bebidasIngeridasHoje[index - 1]
@@ -247,9 +261,10 @@ class _HomePageState extends State<HomePage> {
                             if (index == 0) {
                               if (_controller.totalIngeridoHoje <
                                   _controller.config.metaIngestao) {
+                                print(
+                                    '####### ${_controller.config.horariosLembretes}');
                                 Time hora =
                                     _controller.config.horariosLembretes[0];
-
                                 return ListTile(
                                   contentPadding:
                                       EdgeInsets.only(left: 12.0, right: 20.0),
@@ -331,8 +346,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                             );
                           },
-                        ),
-                      ),
+                        );
+                      }),
                     ),
                   ),
                   SizedBox(

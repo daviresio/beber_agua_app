@@ -2,7 +2,9 @@ import 'package:beber_agua/app/data/models/bebida.dart';
 import 'package:beber_agua/app/data/models/bebida_ingerida.dart';
 import 'package:beber_agua/app/data/models/bebidas_join.dart';
 import 'package:beber_agua/app/modules/home/home_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../database.dart';
 
@@ -12,7 +14,6 @@ part 'bebida_ingerida_dao.g.dart';
 class BebidaIngeridaDao extends DatabaseAccessor<Database>
     with _$BebidaIngeridaDaoMixin {
   final Database db;
-  final _homeController = HomeController();
 
   BebidaIngeridaDao(this.db) : super(db);
 
@@ -31,7 +32,7 @@ class BebidaIngeridaDao extends DatabaseAccessor<Database>
   Future remove(id) =>
       (delete(bebidaIngeridas)..where((t) => t.id.equals(id))).go();
 
-  void dadosDoDia() {
+  dadosDoDia() {
     var hoje = DateTime.now();
 
     //FIXME por causa de um bug na comparacao do dia no filtro abaixo, eu preciso adicionar um dia para funcionar no dia certo
@@ -42,7 +43,7 @@ class BebidaIngeridaDao extends DatabaseAccessor<Database>
 //      print(a);
 //    });
 
-    (select(bebidaIngeridas)
+    return (select(bebidaIngeridas)
           ..where((t) {
             return t.dataIngestao.year.equals(hoje.year);
           }))
@@ -54,13 +55,6 @@ class BebidaIngeridaDao extends DatabaseAccessor<Database>
               return BebidaComBebidaIngerida(
                   bebida: row.readTable(bebidas),
                   bebidaIngerida: row.readTable(bebidaIngeridas));
-            }).toList())
-        .listen((onData) {
-          _homeController.setBebidasIngeridasHoje(onData
-              .where((v) =>
-                  v.bebidaIngerida.dataIngestao.month == hoje.month &&
-                  v.bebidaIngerida.dataIngestao.day == hoje.day)
-              .toList());
-        });
+            }).toList());
   }
 }

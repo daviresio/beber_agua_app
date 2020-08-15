@@ -1,3 +1,4 @@
+import 'package:beber_agua/app/data/models/bebidas_join.dart';
 import 'package:beber_agua/app/data/models/config.dart';
 import 'package:mobx/mobx.dart';
 
@@ -17,6 +18,8 @@ abstract class _HomeBase with Store {
 
   @action
   void initConfig(config, bebida) {
+    print(config.toString());
+    print(bebida.toString());
     this.config = config;
     this.bebida = bebida;
   }
@@ -25,16 +28,14 @@ abstract class _HomeBase with Store {
   List<dynamic> bebidasIngeridasHoje;
 
   @action
-  setBebidasIngeridasHoje(v) {
-    this.bebidasIngeridasHoje = v;
+  setBebidasIngeridasHoje(List<BebidaComBebidaIngerida> v) {
+    this.bebidasIngeridasHoje = List<BebidaComBebidaIngerida>.from(v);
   }
 
   @computed
   int get totalIngeridoHoje {
-    if(bebidasIngeridasHoje == null) return 0;
+    if (bebidasIngeridasHoje == null) return 0;
     int total = bebidasIngeridasHoje.fold(0, (acc, cur) => acc + cur.bebida.ml);
     return total;
   }
-
 }
-
