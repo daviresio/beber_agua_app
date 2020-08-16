@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class PercentArcPainter extends CustomPainter {
-
   final double porcentagemConcluida;
 
   PercentArcPainter(this.porcentagemConcluida);
 
-
   @override
   void paint(Canvas canvas, Size size) {
-
     Paint paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6.0
@@ -22,17 +19,22 @@ class PercentArcPainter extends CustomPainter {
     Offset center = Offset(width / 2, height / 2);
     double radius = min(width / 2, height / 2);
 
-
     //desenha a barra nao completa
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), pi, pi, false, paint);
+    canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius), pi, pi, false, paint);
 
     //desenha a porcentagem da barra completa
     paint.color = Colors.blueAccent;
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), pi, pi * porcentagemConcluida, false, paint);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), pi,
+        pi * porcentagemConcluida, false, paint);
 
     //box shadow do circulo
     Path pathSombra = Path();
-    pathSombra.addArc(Rect.fromCircle(center: Offset(width / 2, height / 2.08), radius: radius * .88), pi, pi * 2);
+    pathSombra.addArc(
+        Rect.fromCircle(
+            center: Offset(width / 2, height / 2.08), radius: radius * .88),
+        pi,
+        pi * 2);
     pathSombra.close();
     canvas.drawShadow(pathSombra, Colors.black, 6.0, true);
 
@@ -60,13 +62,10 @@ class PercentArcPainter extends CustomPainter {
     pathOnda.cubicTo(x1, height * .962, x2, height * .962, ondaEndX, ondaEndY);
     canvas.drawPath(pathOnda, paint);
 
-
 //    paint.color = Colors.green;
 //    canvas.drawCircle(Offset(x1, y1), 8.0, paint);
 //    canvas.drawCircle(Offset(x2, y2), 8.0, paint);
-
   }
-
 
   @override
   bool shouldRepaint(PercentArcPainter oldDelegate) {
@@ -77,7 +76,4 @@ class PercentArcPainter extends CustomPainter {
   bool shouldRebuildSemantics(PercentArcPainter oldDelegate) {
     return true;
   }
-
 }
-
-

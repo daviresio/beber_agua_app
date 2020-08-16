@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var middleContentwidth = MediaQuery.of(context).size.width / 1.2;
+    var middleContentwidth = MediaQuery.of(context).size.width / 1.5;
 
     return Scaffold(
       body: Observer(
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                                       Text("${_controller.bebida.ml} ml"),
                                       SvgPicture.asset(
                                         "assets/images/${_controller.bebida.imagemCopo}",
-                                        height: 30.0,
+                                        height: 22.0,
                                       ),
                                     ],
                                   ),
@@ -142,11 +142,14 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                           Positioned(
-                            left: MediaQuery.of(context).size.width * .35,
-                            top: middleContentwidth * .35,
+                            left: 0,
+                            right: 0,
+                            top: middleContentwidth * .30,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
                                         _controller.totalIngeridoHoje
@@ -168,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Positioned(
-                            right: MediaQuery.of(context).size.width * .05,
+                            right: middleContentwidth / 5,
                             top: middleContentwidth / 2 + 10,
                             child: SvgPicture.asset(
                               "assets/images/gota_agua.svg",
@@ -176,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Positioned(
-                            left: MediaQuery.of(context).size.width * .05,
+                            left: middleContentwidth / 5,
                             top: middleContentwidth / 2 + 10,
                             child: SvgPicture.asset(
                               "assets/images/cactus.svg",
@@ -247,8 +250,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Positioned(
-                            bottom: -.5,
-                            left: MediaQuery.of(context).size.width * .23,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
                             child: Column(
                               children: <Widget>[
                                 Icon(
