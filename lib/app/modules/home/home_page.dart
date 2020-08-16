@@ -8,6 +8,7 @@ import 'package:beber_agua/app/data/models/config.dart';
 import 'package:beber_agua/app/modules/home/home_controller.dart';
 import 'package:beber_agua/app/modules/home/widgets/percent_arc.dart';
 import 'package:beber_agua/app/util/date_util.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -17,6 +18,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dialogs/escolher_copo_dialog.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['flutterio', 'beautiful apps'],
+  contentUrl: 'https://flutter.io',
+  childDirected: false,
+  testDevices: <String>[
+    '6F2EBF1610606D4A5DB5283975340360'
+  ], // Android emulators are considered test devices
+);
+
+BannerAd myBanner = BannerAd(
+  adUnitId: 'ca-app-pub-9591700216490116/3590514272',
+  size: AdSize.smartBanner,
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("BannerAd event is $event");
+  },
+);
+
+const BANNER_HEIGHT = 60.0;
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -56,6 +77,14 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       initData();
     });
+
+    myBanner
+      ..load()
+      ..show(
+        anchorOffset: 0.0,
+        horizontalCenterOffset: 10.0,
+        anchorType: AnchorType.bottom,
+      );
   }
 
   final BebidaDao _bebidaDao = Database.instance.bebidaDao;
