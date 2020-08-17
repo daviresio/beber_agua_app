@@ -49,33 +49,36 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   HomeController _controller = HomeController();
 
-  void initData() {
-    SharedPreferences.getInstance().then((prefs) async {
-      var configString = prefs.getString(Config.preferenceKey);
-      var configDecoded = json.decode(configString);
-      Config config = Config.fromJson(configDecoded);
-      var bebida =
-          await Database.instance.bebidaDao.find(config.copoSelecionadoId);
-      var hoje = DateTime.now();
-      _controller.initConfig(config, bebida);
-      Database.instance.bebidaIngeridaDao.dadosDoDia().listen((onData) {
-        return _controller.setBebidasIngeridasHoje(onData
-            .where((v) =>
-                v.bebidaIngerida.dataIngestao.month == hoje.month &&
-                v.bebidaIngerida.dataIngestao.day == hoje.day)
-            .toList());
-      });
+  AnimationController _animationController;
+  Animation<double> _animation;
+
+  void initData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var configString = prefs.getString(Config.preferenceKey);
+    var configDecoded = json.decode(configString);
+    Config config = Config.fromJson(configDecoded);
+    var bebida =
+        await Database.instance.bebidaDao.find(config.copoSelecionadoId);
+    var hoje = DateTime.now();
+    _controller.initConfig(config, bebida);
+    Database.instance.bebidaIngeridaDao.dadosDoDia().listen((onData) {
+      return _controller.setBebidasIngeridasHoje(onData
+          .where((v) =>
+              v.bebidaIngerida.dataIngestao.month == hoje.month &&
+              v.bebidaIngerida.dataIngestao.day == hoje.day)
+          .toList());
     });
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      initData();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await initData();
     });
 
     myBanner
@@ -85,6 +88,25 @@ class _HomePageState extends State<HomePage> {
         horizontalCenterOffset: 10.0,
         anchorType: AnchorType.bottom,
       );
+
+    _animationController = AnimationController(
+        duration: const Duration(milliseconds: 200), vsync: this, value: 1);
+
+    _animation = CurvedAnimation(
+        parent: _animationController, curve: Curves.bounceInOut);
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController?.dispose();
+    myBanner?.dispose();
+    super.dispose();
   }
 
   final BebidaDao _bebidaDao = Database.instance.bebidaDao;
@@ -116,11 +138,12 @@ class _HomePageState extends State<HomePage> {
                           Observer(
                             builder: (_) {
                               return Positioned(
-                                bottom: 40,
+                                bottom: middleContentwidth / 8,
                                 left:
-                                    MediaQuery.of(context).size.width / 2 - 15,
+                                    MediaQuery.of(context).size.width / 2 - 18,
                                 child: GestureDetector(
                                   onTap: () {
+                                    _animationController.animateTo(1.5);
                                     //_controller.bebida.id
                                     _bebidaIngeridaDao.add(BebidaIngerida(
                                         dataIngestao: DateTime.now(),
@@ -128,14 +151,18 @@ class _HomePageState extends State<HomePage> {
                                             .config.copoSelecionadoId,
                                         quantidadeIngerida: 1));
                                   },
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text("${_controller.bebida.ml} ml"),
-                                      SvgPicture.asset(
-                                        "assets/images/${_controller.bebida.imagemCopo}",
-                                        height: 22.0,
-                                      ),
-                                    ],
+                                  child: ScaleTransition(
+                                    alignment: Alignment.bottomCenter,
+                                    scale: _animation,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text("${_controller.bebida.ml} ml"),
+                                        SvgPicture.asset(
+                                          "assets/images/${_controller.bebida.imagemCopo}",
+                                          height: 22.0,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
@@ -250,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Positioned(
-                            bottom: 0,
+                            bottom: -2,
                             left: 0,
                             right: 0,
                             child: Column(
@@ -406,5 +433,6 @@ _porcentagemConcluida(int totalIngeridoHoje, int metaIngestao) {
   if (totalIngeridoHoje == 0.0) return 0.0;
   if (totalIngeridoHoje >= metaIngestao) return 1.0;
   var calc = ((totalIngeridoHoje / metaIngestao) * 100).toInt();
-  return double.parse("0.$calc");
+  //tive que adicionar um zero no comeco caso seja uma casa decimal para corrigir um bug
+  return double.parse("0.${completeZeroDate(calc)}");
 }

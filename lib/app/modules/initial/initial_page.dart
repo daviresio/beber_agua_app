@@ -41,9 +41,10 @@ class _InitialPageState extends State<InitialPage> {
       var lembrete = NotificationsConfig();
 
       _config.horariosLembretes.forEach((v) => lembrete.showLembreteAt(
-          title: 'Beber agua',
-          body: 'agpra sao a hora de beber agua',
-          time: v));
+            title: 'Beber agua',
+            body: 'agora `e hora de beber agua',
+            time: v,
+          ));
 
       var prefs = await SharedPreferences.getInstance();
       var _configJson = json.encode(_config.toJson());
@@ -52,7 +53,7 @@ class _InitialPageState extends State<InitialPage> {
         Config.preferenceKey,
         _configString,
       );
-      Navigator.of(context).pushNamed('/home');
+      Navigator.of(context).pushNamedAndRemoveUntil('/home', (_) => false);
     } else {
       _controller.nextPage(
           duration: Duration(seconds: 1), curve: Curves.easeInOut);
@@ -75,7 +76,7 @@ class _InitialPageState extends State<InitialPage> {
     SharedPreferences.getInstance().then((prefs) {
       if (prefs.getString(Config.preferenceKey) != null) {
         //TODO comentar essa linha para sempre fazer o cadastro, util para etapas no desenvolvimento
-        Navigator.of(context).pushNamed('/home');
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (_) => false);
       }
     });
   }

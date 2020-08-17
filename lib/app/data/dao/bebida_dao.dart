@@ -14,6 +14,8 @@ class BebidaDao extends DatabaseAccessor<Database> with _$BebidaDaoMixin {
   Future<Bebida> find(int id) =>
       (select(bebidas)..where((t) => t.id.equals(id))).getSingle();
 
+  Future<List<Bebida>> listTeste() => select(bebidas).get();
+
   Stream<List<Bebida>> list() => select(bebidas).watch();
 
   Future add(Bebida bebida) => into(bebidas).insert(

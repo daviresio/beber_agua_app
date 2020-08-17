@@ -47,24 +47,21 @@ class PercentArcPainter extends CustomPainter {
     double x1 = width * .4;
     double x2 = width * .6;
 
-    double ondaBeginX = width * .26;
+    double ondaBeginX = width * .31;
     double ondaBeginY = height * .815;
-    double ondaEndX = width * .74;
+    double ondaEndX = width * .69;
     double ondaEndY = height * .815;
 
-    paint.style = PaintingStyle.fill;
-    paint.color = Colors.blueAccent.withOpacity(.3);
+    var paintOnda = Paint()
+      ..style = PaintingStyle.fill
+      ..color = Colors.blueAccent.withOpacity(.3);
     Path pathOnda = Path();
 
     pathOnda.moveTo(ondaBeginX, ondaBeginY);
     pathOnda.cubicTo(x1, height * .6, x2, height * .6, ondaEndX, ondaEndY);
     pathOnda.moveTo(ondaBeginX, ondaBeginY);
     pathOnda.cubicTo(x1, height * .962, x2, height * .962, ondaEndX, ondaEndY);
-    canvas.drawPath(pathOnda, paint);
-
-//    paint.color = Colors.green;
-//    canvas.drawCircle(Offset(x1, y1), 8.0, paint);
-//    canvas.drawCircle(Offset(x2, y2), 8.0, paint);
+    canvas.drawPath(pathOnda, paintOnda);
   }
 
   @override

@@ -23,12 +23,13 @@ dependencies:
   flutter_svg: ^0.18.0
   moor_flutter: ^2.0.0
   shared_preferences:
-  flutter_local_notifications: ^1.2.0+4
+  flutter_local_notifications: ^1.4.4+3
   path_provider: ^1.6.1
   provider:
   firebase_admob: ^0.9.3+4
   firebase_core: ^0.4.5
   firebase_analytics: ^5.0.16
+  get_it: ^4.0.4
   #essas 4 dependencias abaixo estavam na documentacao do moor
   #  moor:
   #  moor_ffi:

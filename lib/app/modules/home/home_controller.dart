@@ -19,7 +19,7 @@ abstract class _HomeBase with Store {
 
   @action
   void initConfig(Config config, Bebida bebida) {
-    this.bebida = bebida;
+    this.bebida = bebida.copyWith();
     this.config = config.copyWith();
   }
 
